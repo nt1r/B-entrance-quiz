@@ -1,5 +1,6 @@
 package com.thoughtworks.capability.gtb.entrancequiz.service;
 
+import com.thoughtworks.capability.gtb.entrancequiz.dto.AddNewMemberRequestDto;
 import com.thoughtworks.capability.gtb.entrancequiz.dto.AllMemberList;
 import com.thoughtworks.capability.gtb.entrancequiz.dto.TeamMemberDto;
 import org.springframework.stereotype.Service;
@@ -72,5 +73,16 @@ public class GroupAssignService {
         return AllMemberList.builder()
                 .memberList(memberList)
                 .build();
+    }
+
+    public AllMemberList addOneMember(AddNewMemberRequestDto newMemberRequestDto) {
+        if (isAddNewMemberRequestDtoValid(newMemberRequestDto)) {
+            memberList.add(generateNewMember(newMemberRequestDto.getName()));
+        }
+        return getAllMembers();
+    }
+
+    private boolean isAddNewMemberRequestDtoValid(AddNewMemberRequestDto newMemberRequestDto) {
+        return !newMemberRequestDto.getName().equals("");
     }
 }
