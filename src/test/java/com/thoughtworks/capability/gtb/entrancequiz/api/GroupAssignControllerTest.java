@@ -24,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class GroupAssignControllerTest {
     private final String getAllMembersUrl = "/group-api/init-list";
     private final String addOneMemberUrl = "/group-api/member";
+    private final String assignGroupUrl = "/group-api/assign";
 
     @Autowired
     MockMvc mockMvc;
@@ -96,6 +97,20 @@ class GroupAssignControllerTest {
                 .andExpect(jsonPath("$.memberList[19].name", is("党泽")))
                 .andExpect(jsonPath("$.memberList[23].name", is("马庆")))
                 .andExpect(jsonPath("$.memberList[29].name", is("赵允齐")))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void shouldGetRandomMemberList() throws Exception {
+        mockMvc.perform(get(assignGroupUrl).accept(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8"))
+                .andExpect(jsonPath("$.teamList", hasSize(6)))
+                .andExpect(jsonPath("$.teamList[0].memberList", hasSize(6)))
+                .andExpect(jsonPath("$.teamList[1].memberList", hasSize(6)))
+                .andExpect(jsonPath("$.teamList[2].memberList", hasSize(6)))
+                .andExpect(jsonPath("$.teamList[3].memberList", hasSize(6)))
+                .andExpect(jsonPath("$.teamList[4].memberList", hasSize(6)))
+                .andExpect(jsonPath("$.teamList[5].memberList", hasSize(5)))
                 .andExpect(status().isOk());
     }
 }

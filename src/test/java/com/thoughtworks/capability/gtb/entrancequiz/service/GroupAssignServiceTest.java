@@ -2,6 +2,7 @@ package com.thoughtworks.capability.gtb.entrancequiz.service;
 
 import com.thoughtworks.capability.gtb.entrancequiz.dto.AddNewMemberRequestDto;
 import com.thoughtworks.capability.gtb.entrancequiz.dto.AllMemberList;
+import com.thoughtworks.capability.gtb.entrancequiz.dto.GroupMemberResponseDto;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -89,5 +90,23 @@ class GroupAssignServiceTest {
         assertEquals("党泽", allMemberListList.getMemberList().get(19).getName());
         assertEquals("马庆", allMemberListList.getMemberList().get(23).getName());
         assertEquals("赵允齐", allMemberListList.getMemberList().get(29).getName());
+    }
+
+    @Test
+    public void shouldAssignGroupSuccess() {
+        // Given
+
+        // When
+        GroupMemberResponseDto groupMemberResponseDto = groupAssignService.assignGroup();
+
+        // Then
+        assertEquals(6, groupMemberResponseDto.getTeamList().size());
+
+        assertEquals(6, groupMemberResponseDto.getTeamList().get(0).getMemberList().size());
+        assertEquals(6, groupMemberResponseDto.getTeamList().get(1).getMemberList().size());
+        assertEquals(6, groupMemberResponseDto.getTeamList().get(2).getMemberList().size());
+        assertEquals(6, groupMemberResponseDto.getTeamList().get(3).getMemberList().size());
+        assertEquals(6, groupMemberResponseDto.getTeamList().get(4).getMemberList().size());
+        assertEquals(5, groupMemberResponseDto.getTeamList().get(5).getMemberList().size());
     }
 }

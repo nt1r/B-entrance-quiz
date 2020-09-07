@@ -2,6 +2,7 @@ package com.thoughtworks.capability.gtb.entrancequiz.api;
 
 import com.thoughtworks.capability.gtb.entrancequiz.dto.AddNewMemberRequestDto;
 import com.thoughtworks.capability.gtb.entrancequiz.dto.AllMemberList;
+import com.thoughtworks.capability.gtb.entrancequiz.dto.GroupMemberResponseDto;
 import com.thoughtworks.capability.gtb.entrancequiz.service.GroupAssignService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,5 +25,10 @@ public class GroupAssignController {
     @PostMapping("/group-api/member")
     public AllMemberList addOneMember(@RequestBody AddNewMemberRequestDto newMemberRequestDto) {
         return groupAssignService.addOneMember(newMemberRequestDto);
+    }
+
+    @GetMapping("group-api/assign")
+    public GroupMemberResponseDto assignGroup() {
+        return groupAssignService.assignGroup();
     }
 }
