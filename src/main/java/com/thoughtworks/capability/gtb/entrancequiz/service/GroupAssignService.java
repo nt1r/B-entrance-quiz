@@ -11,7 +11,7 @@ import java.util.List;
 
 @Service
 public class GroupAssignService {
-    private List<TeamMemberDto> memberList = new ArrayList<>();
+    public static List<TeamMemberDto> memberList = new ArrayList<>();
     private Integer autoIncreaseId = 1;
     private List<String> initMemberNameList = Arrays.asList(
             "沈乐棋",
