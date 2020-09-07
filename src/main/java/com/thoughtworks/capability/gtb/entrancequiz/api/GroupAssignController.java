@@ -17,21 +17,25 @@ public class GroupAssignController {
     }
 
     @GetMapping("/group-api/init-list")
+    @CrossOrigin
     public AllMemberList getAllMembers() {
         return groupAssignService.getAllMembers();
     }
 
     @PostMapping("/group-api/member")
+    @CrossOrigin
     public AllMemberList addOneMember(@RequestBody AddNewMemberRequestDto newMemberRequestDto) {
         return groupAssignService.addOneMember(newMemberRequestDto);
     }
 
     @GetMapping("/group-api/assign")
+    @CrossOrigin
     public GroupMemberResponseDto assignGroup() {
         return groupAssignService.assignGroup();
     }
 
     @PostMapping("/group-api/rename-team")
+    @CrossOrigin
     public ResponseEntity<String> renameTeam(@RequestBody RenameTeamRequestDto renameTeamRequestDto) {
         return groupAssignService.renameTeam(renameTeamRequestDto);
     }
