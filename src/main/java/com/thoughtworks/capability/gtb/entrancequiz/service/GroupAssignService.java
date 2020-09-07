@@ -1,6 +1,7 @@
 package com.thoughtworks.capability.gtb.entrancequiz.service;
 
 import com.thoughtworks.capability.gtb.entrancequiz.dto.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ public class GroupAssignService {
     public static List<String> teamNameList = new ArrayList<>();
 
     private Integer autoIncreaseId = 1;
-    private final Integer GROUP_NUMBER = 6;
+    private static final Integer GROUP_NUMBER = 6;
     private List<String> initMemberNameList = Arrays.asList(
             "沈乐棋",
             "徐慧慧",
@@ -58,13 +59,13 @@ public class GroupAssignService {
         initTeamName();
     }
 
-    private void initTeamName() {
+    public static void initTeamName() {
         for (int i = 0; i < GROUP_NUMBER; ++i) {
             teamNameList.add("Team " + (i + 1));
         }
     }
 
-    private void initMemberList() {
+    public void initMemberList() {
         memberList.clear();
         for (String memberName: initMemberNameList) {
             memberList.add(generateNewMember(memberName));
@@ -168,5 +169,28 @@ public class GroupAssignService {
         TeamMemberDto cache = randomList.get(randomIndex);
         randomList.set(randomIndex, randomList.get(lastIndex));
         randomList.set(lastIndex, cache);
+    }
+
+    public ResponseEntity<String> renameTeam(RenameTeamRequestDto renameTeamRequestDto) {
+        if (!isTeamIndexValid(renameTeamRequestDto)) {
+            return ResponseEntity.badRequest().body("invalid index " + renameTeamRequestDto.getIndex());
+        }
+
+        if (isTeamNewNameInvalid(renameTeamRequestDto)) {
+            return ResponseEntity.badRequest().body("invalid name");
+        }
+
+        teamNameList.set(renameTeamRequestDto.getIndex(), renameTeamRequestDto.getNewName());
+
+        return ResponseEntity.ok().body("success");
+    }
+
+    private boolean isTeamNewNameInvalid(RenameTeamRequestDto renameTeamRequestDto) {
+        return teamNameList.get(renameTeamRequestDto.getIndex()).equals(renameTeamRequestDto.getNewName())
+                || renameTeamRequestDto.getNewName().equals("");
+    }
+
+    private boolean isTeamIndexValid(RenameTeamRequestDto renameTeamRequestDto) {
+        return renameTeamRequestDto.getIndex() > -1 && renameTeamRequestDto.getIndex() < GROUP_NUMBER;
     }
 }

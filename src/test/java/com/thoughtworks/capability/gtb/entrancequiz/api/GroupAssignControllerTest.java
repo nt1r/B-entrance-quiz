@@ -2,6 +2,7 @@ package com.thoughtworks.capability.gtb.entrancequiz.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.capability.gtb.entrancequiz.dto.AddNewMemberRequestDto;
+import com.thoughtworks.capability.gtb.entrancequiz.dto.RenameTeamRequestDto;
 import com.thoughtworks.capability.gtb.entrancequiz.service.GroupAssignService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,18 +26,17 @@ class GroupAssignControllerTest {
     private final String getAllMembersUrl = "/group-api/init-list";
     private final String addOneMemberUrl = "/group-api/member";
     private final String assignGroupUrl = "/group-api/assign";
-
+    private final String renameTeamUrl = "/group-api/rename-team";
+    private final ObjectMapper objectMapper = new ObjectMapper();
     @Autowired
     MockMvc mockMvc;
-
     @Autowired
     GroupAssignService groupAssignService;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
     void setUp() {
         groupAssignService = new GroupAssignService();
+        GroupAssignService.initTeamName();
     }
 
     @AfterEach
@@ -112,5 +112,50 @@ class GroupAssignControllerTest {
                 .andExpect(jsonPath("$.teamList[4].memberList", hasSize(6)))
                 .andExpect(jsonPath("$.teamList[5].memberList", hasSize(5)))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void shouldRenameTeamSuccess() throws Exception {
+        RenameTeamRequestDto renameTeamRequestDto = RenameTeamRequestDto.builder()
+                .index(3)
+                .newName("To be No. 4")
+                .build();
+
+        mockMvc.perform(post(renameTeamUrl).accept(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(renameTeamRequestDto)))
+                .andExpect(jsonPath("$", is("success")))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void shouldRenameTeamFailWhenNewNameIsEmpty() throws Exception {
+        RenameTeamRequestDto renameTeamRequestDto = RenameTeamRequestDto.builder()
+                .index(3)
+                .newName("")
+                .build();
+
+        mockMvc.perform(post(renameTeamUrl).accept(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(renameTeamRequestDto)))
+                .andExpect(jsonPath("$", is("invalid name")))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldRenameTeamFailWhenNewNameIsRepeated() throws Exception {
+        RenameTeamRequestDto renameTeamRequestDto = RenameTeamRequestDto.builder()
+                .index(4)
+                .newName("Team 5")
+                .build();
+
+        mockMvc.perform(post(renameTeamUrl).accept(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(renameTeamRequestDto)))
+                .andExpect(jsonPath("$", is("invalid name")))
+                .andExpect(status().isBadRequest());
     }
 }
