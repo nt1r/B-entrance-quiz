@@ -1,0 +1,21 @@
+# Taskings
+
+- 初始化学员列表
+    - Controller
+    - Service
+        - 内存常量存储学员数据
+    - Test cases
+- 添加学员
+    - Controller
+    - Service
+        - 向数组里添加新学员，返回新数组
+    - Test cases
+- 随机分组
+    - Controller
+    - Service
+    - Test cases
+- 重命名team名称
+    - Controller
+    - Service
+        - 对重复的名称处理：返回409
+    - Test cases
