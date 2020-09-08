@@ -14,9 +14,11 @@ public class GroupAssignService {
     public static List<TeamMemberDto> memberList = new ArrayList<>();
     public static List<String> teamNameList = new ArrayList<>();
 
+    public static GroupMemberResponseDto groupMemberResponseDto;
+
     private Integer autoIncreaseId = 1;
     private static final Integer GROUP_NUMBER = 6;
-    private List<String> initMemberNameList = Arrays.asList(
+    private final List<String> initMemberNameList = Arrays.asList(
             "沈乐棋",
             "徐慧慧",
             "陈思聪",
@@ -53,6 +55,7 @@ public class GroupAssignService {
             "廖浚斌",
             "凌凤仪"
     );
+    // file read, not hard code
 
     public GroupAssignService() {
         initMemberList();
@@ -124,9 +127,10 @@ public class GroupAssignService {
         }
         /* set 'teamList' */
 
-        return GroupMemberResponseDto.builder()
+        groupMemberResponseDto = GroupMemberResponseDto.builder()
                 .teamList(groupTeamDtoList)
                 .build();
+        return groupMemberResponseDto;
     }
 
     private List<Integer> generateMemberCountList(int size, Integer groupNumber) {
@@ -173,7 +177,7 @@ public class GroupAssignService {
 
     public ResponseEntity<String> renameTeam(RenameTeamRequestDto renameTeamRequestDto) {
         if (!isTeamIndexValid(renameTeamRequestDto)) {
-            return ResponseEntity.badRequest().body("invalid index " + renameTeamRequestDto.getIndex());
+            return ResponseEntity.status(409).body("invalid index " + renameTeamRequestDto.getIndex());
         }
 
         if (isTeamNewNameInvalid(renameTeamRequestDto)) {
@@ -192,5 +196,18 @@ public class GroupAssignService {
 
     private boolean isTeamIndexValid(RenameTeamRequestDto renameTeamRequestDto) {
         return renameTeamRequestDto.getIndex() > -1 && renameTeamRequestDto.getIndex() < GROUP_NUMBER;
+    }
+
+    public ResponseEntity<GroupMemberResponseDto> getCachedAssignGroup() {
+        if (groupMemberResponseDto == null) {
+            return ResponseEntity.badRequest().body(groupMemberResponseDto);
+        } else {
+            // update team name
+            int teamIndex= 0;
+            for (GroupTeamDto groupTeamDto : groupMemberResponseDto.getTeamList()) {
+                groupTeamDto.setName(teamNameList.get(teamIndex++));
+            }
+            return ResponseEntity.ok().body(groupMemberResponseDto);
+        }
     }
 }

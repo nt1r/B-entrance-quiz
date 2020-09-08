@@ -34,6 +34,12 @@ public class GroupAssignController {
         return groupAssignService.assignGroup();
     }
 
+    @GetMapping("/group-api/cached-assign")
+    @CrossOrigin
+    public ResponseEntity<GroupMemberResponseDto> getCacheAssignGroup() {
+        return groupAssignService.getCachedAssignGroup();
+    }
+
     @PostMapping("/group-api/rename-team")
     @CrossOrigin
     public ResponseEntity<String> renameTeam(@RequestBody RenameTeamRequestDto renameTeamRequestDto) {
